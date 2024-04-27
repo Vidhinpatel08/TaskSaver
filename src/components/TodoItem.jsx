@@ -19,7 +19,7 @@ const TodoItem = ({ item, ToggleShowfinish, handleDelete, handleEdit, typeBox })
                     <div className="icone text-xl bg-indigo-900 rounded-md cursor-pointer text-white p-[3px]" onClick={(e) => { handleDelete(e, item.id) }}><MdDelete /></div>
                 </div>)}
             </div>
-            <div className="lines m-auto w-full h-[1px]  bg-gray-400"></div>
+            <div className="lines m-auto w-[96%] h-[1px]  bg-gray-400"></div>
         </>
     )
 }

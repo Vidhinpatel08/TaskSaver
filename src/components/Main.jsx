@@ -14,6 +14,7 @@ const Main = () => {
   const [showFinished, setShowFinished] = useState(false)
   const [todos, setTodos] = useState([])
   const [availableTodo, setAvailableTodo] = useState('')
+  const [displayNoTodo, setDisplayNoTodo] = useState([])
 
   useEffect(() => {
     let todoString = localStorage.getItem("TaskSaver")
@@ -73,21 +74,22 @@ const Main = () => {
     setAvailableTodo('')
   }
 
+
   return (
-    <div className="w-full bg-[#e2dfef] p-3 px-5 font-[math]">
+    <div className="w-full bg-[#e2dfef] md:p-3 md:px-5 p-2 font-[math]">
       <div className="">
         <div className='bg-violet-100 lg:w-[50%] md:w-[60%] sm:w-[80%] w-[95%]  m-auto flex justify-center min-h-[85vh] rounded-xl'>
-          <div className="taskAdd w-full p-4">
-            <h1 className='md:text-[33px] sm:text-[30px] text-[25px] w-fit m-auto font-bold my-2 font-[math] text-opacity-75'>TaskSaver - Manage your todos at one place</h1>
-            <div className="input-add w-[95%] m-auto pt-3">
-              <h2 className='md:text-[25px] sm:text-[22px] text-[18px] font-bold my-1'>Add a Todo</h2>
+          <div className="taskAdd w-full md:p-4 p-2">
+            <h1 className='md:text-[33px] sm:text-[30px] text-[25px] w-fit m-auto font-bold my-2 font-[math] text-opacity-75 text-center'>TaskSaver - Manage your todos at one place</h1>
+            <div className="input-add md:w-[95%] w-full m-auto pt-3">
+              <h2 className='md:text-[25px] sm:text-[22px] text-[18px] font-bold my-1 text-gray-700'>Add a Todo</h2>
               {
                 availableTodo ?
                   (<form onSubmit={handleSubmit(onUpdate)}>
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start md:gap-3">
                       <div className='flex flex-col gap-1 w-full p-2'>
                         <input defaultValue={availableTodo.Todo || ""} {...register("item", { required: { value: true, message: 'This field is required*' }, minLength: { value: 3, message: 'Todo must have at least 3 alpha characters*' } })} className='w-full p-1 px-3 rounded-full' />
-                        <div className="errorMessage w-full h-6 px-3 rounded-full text-red-900 font-semibold">{errors.item && <span>{errors.item.message}</span>}
+                        <div className="errorMessage md:w-full w-[150%] md:h-6 md:px-3  rounded-full text-red-900 font-semibold">{errors.item && <span>{errors.item.message}</span>}
                         </div>
                       </div>
                       <button type="submit" className='text-white m-2 rounded-2xl ml-0 p-1 px-3 bg-violet-800 hover:bg-violet-950 '>Update</button>
@@ -95,10 +97,10 @@ const Main = () => {
                   </form>)
                   :
                   (<form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start md:gap-3 ">
                       <div className='flex flex-col gap-1 w-full p-2'>
                         <input defaultValue={''} {...register("item", { required: { value: true, message: 'This field is required*' }, minLength: { value: 3, message: 'Todo must have at least 3 alpha characters*' } })} className='w-full p-1 px-3 rounded-full' />
-                        <div className="errorMessage w-full h-6 px-3 rounded-full text-red-900 font-semibold">{errors.item && <span>{errors.item.message}</span>}
+                        <div className="errorMessage md:w-full w-[150%] md:h-6 md:px-3  rounded-full text-red-900 font-semibold">{errors.item && <span>{errors.item.message}</span>}
                         </div>
                       </div>
                       <button type="submit" className='text-white m-2 rounded-2xl ml-0 p-1 px-3 bg-violet-800 hover:bg-violet-950 '>Submit</button>
@@ -107,7 +109,7 @@ const Main = () => {
               }
             </div>
 
-            <div className="w-[95%] m-auto ">
+            <div className="md:w-[95%] m-auto ">
               <div className="checkme flex gap-2 items-center">
                 <input type="checkbox" name="ShowFinished" checked={showFinished} onChange={() => { setShowFinished((item) => !item) }} id="Show Finished" />
                 <label htmlFor="Show Finished">Show Finished</label>
@@ -116,12 +118,15 @@ const Main = () => {
               <div className="lines m-auto w-[90%] h-[1px] my-5 bg-gray-400"></div>
             </div>
 
-            <div className="your-task w-[95%] m-auto ">
-              <h2 className='md:text-[25px] sm:text-[22px] text-[18px] font-bold my-1 '>Your Todos</h2>
+            <div className="your-task md:w-[95%] m-auto ">
+              <h2 className='md:text-[25px] sm:text-[22px] text-[18px] font-bold my-1 text-gray-700 '>Your Todos</h2>
               <div>{todos.length === 0 && <div className='p-5 text-[19px] text-slate-700'>No Todos to display</div>}</div>
               <div>{todos.map((item) => {
                 return (showFinished || !item.isCompleted) && <TodoItem key={item.id} item={item} ToggleShowfinish={ToggleShowfinish} handleDelete={handleDelete} handleEdit={handleEdit} />
               })}</div>
+              <div>{!showFinished && todos.every(item => item.isCompleted) && (
+                <div className='p-5 text-[19px] text-slate-700'>No Todos to display</div>
+              )}</div>
             </div>
           </div>
         </div >
