@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { alertContext } from '../context/Context';
 import { useForm } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid';
 import TodoItem from './TodoItem';
@@ -11,10 +12,10 @@ const Main = () => {
     reset,
     formState: { errors },
   } = useForm()
+  const {visibleAlert} = useContext(alertContext)
   const [showFinished, setShowFinished] = useState(false)
   const [todos, setTodos] = useState([])
   const [availableTodo, setAvailableTodo] = useState('')
-  const [displayNoTodo, setDisplayNoTodo] = useState([])
 
   useEffect(() => {
     let todoString = localStorage.getItem("TaskSaver")
@@ -33,6 +34,7 @@ const Main = () => {
     const newTodo = ([...todos, { id: uuidv4(), Todo: data.item, isCompleted: false, Date: new Date().toUTCString() }])
     setTodos(newTodo)
     saveToLS(newTodo)
+    visibleAlert({ type: 'success', message: `Todo added Successfully!!!` })
     reset()
   }
 
@@ -50,6 +52,7 @@ const Main = () => {
     })
     saveToLS(newTodos)
     setTodos(newTodos)
+    visibleAlert({ type: 'success', message: `Todo Deleted Successfully!!!` })
   }
 
   const handleEdit = (e, id) => {
@@ -70,6 +73,7 @@ const Main = () => {
     })
     setTodos(updateTodos)
     saveToLS(updateTodos)
+    visibleAlert({ type: 'success', message: `Todo Updated Successfully!!!` })
     reset()
     setAvailableTodo('')
   }
@@ -120,7 +124,7 @@ const Main = () => {
 
             <div className="your-task md:w-[95%] m-auto ">
               <h2 className='md:text-[25px] sm:text-[22px] text-[18px] font-bold my-1 text-gray-700 '>Your Todos</h2>
-              <div>{todos.length === 0 && <div className='p-5 text-[19px] text-slate-700'>No Todos to display</div>}</div>
+              <div>{showFinished && todos.length === 0 && <div className='p-5 text-[19px] text-slate-700'>No Todos to display</div>}</div>
               <div>{todos.map((item) => {
                 return (showFinished || !item.isCompleted) && <TodoItem key={item.id} item={item} ToggleShowfinish={ToggleShowfinish} handleDelete={handleDelete} handleEdit={handleEdit} />
               })}</div>
